@@ -26,7 +26,8 @@ def fetch_page(city: City, community_id):
     抓取小区详情页面并保存.
     :raise 若出现错误将抛出对应异常.
     """
-    url = f'https://m.lianjia.com/{city.abbr}/xiaoqu/{community_id}/pinzhi'
+    # url = f'https://m.lianjia.com/{city.abbr}/xiaoqu/{community_id}/pinzhi'
+    url = f'https://m.lianjia.com/{city.abbr}/xiaoqu/{community_id}'
 
     r = requests.get(url)
     r.raise_for_status()
@@ -77,9 +78,14 @@ def fetch_all_pages(city_id, threads_num=10):
     if not city:
         return logging.error('请先获取目标城市信息后再进行抓取~')
 
+    # all_communities = db_session.query(Community).filter(
+    #     Community.city_id == city_id,
+    #     Community.page_fetched_at == None
+    # ).all()
+
     all_communities = db_session.query(Community).filter(
         Community.city_id == city_id,
-        Community.page_fetched_at == None
+        Community.address == None
     ).all()
 
     db_session.close()

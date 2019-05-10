@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import json
 import logging
@@ -60,6 +61,8 @@ def load_config():
         # 只有 Path.resolve(strict=True) 才抛, 但 strict 默认为 False.
         # 感觉 3.6 的更合理些...
         config_file = config_file.resolve()
+        # f = config_file.open()
+        # config_dict = json.loads(f.read())
         config_dict = json.loads(config_file.read_text())
     except Exception as e:
         sys.exit('# 错误: 配置文件载入失败: {}'.format(e))

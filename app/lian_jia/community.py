@@ -20,9 +20,10 @@ class Community(AlchemyMixin, Base):
     building_type = Column(types.String(32))  # 建筑类型, 可能无此信息
     second_hand_quantity = Column(types.Integer, nullable=False)
     second_hand_unit_price = Column(types.Integer)  # 二手均价, 可能无此信息
-    detail = Column(JSONB)  # 详细信息键值对, 如: {"物业公司": "...", "物业电话": "...", ...}
+    detail = Column(types.JSON)  # 详细信息键值对, 如: {"物业公司": "...", "物业电话": "...", ...}
     updated_at = Column(types.DateTime, nullable=False, default=datetime.now)
     page_fetched_at = Column(types.DateTime)
+    address = Column(types.String(100))
 
     def __init__(self, city_id, district_id, biz_circle_id, info):
         self.id = int(info['community_id'])

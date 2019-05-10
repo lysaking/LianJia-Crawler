@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import time
 from datetime import datetime, date
 from decimal import Decimal
@@ -10,7 +11,8 @@ from sqlalchemy.types import String
 
 from config import config
 
-_db_url = 'postgresql+psycopg2://{user}:{password}@{host}/{db}'.format(**config.db_info)
+# _db_url = 'postgresql+psycopg2://{user}:{password}@{host}/{db}'.format(**config.db_info)
+_db_url = 'mysql+pymysql://{user}:{password}@{host}/{db}'.format(**config.db_info)
 
 engine = create_engine(_db_url, echo=config.db_echo)
 Base = declarative_base(bind=engine)

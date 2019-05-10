@@ -8,10 +8,11 @@ from lian_jia import Community
 from util.orm import Session
 
 DATA_DIR = Path(__file__).parent.joinpath('../data/').resolve()
+DATA_DIR_DETAILS = Path(__file__).parent.joinpath('../data_details/').resolve()
 
 
 def parse_community_detail(community_id):
-    save_file = DATA_DIR.joinpath(f'{community_id}.html')
+    save_file = DATA_DIR_DETAILS.joinpath(f'{community_id}.html')
 
     if save_file.exists():
         d = pq(save_file.read_text(encoding='utf-8'))
@@ -28,8 +29,48 @@ def parse_community_detail(community_id):
     else:
         logging.error(f'# 详情页面不存在, community_id={community_id}')
 
+def parse_community_address(community_id):
+    save_file = DATA_DIR.joinpath(f'{community_id}.html')
 
-def parse_all_communities(city_id):
+    if save_file.exists():
+        d = pq(save_file.read_text(encoding='utf-8'))
+
+        address = [e.text[3:] for e in d('div.resblock_address')]
+
+        if not address:
+            logging.warning(f'# 页面已找到, 但其中未发现小区详情信息, community_id={community_id}')
+
+        return address
+
+    else:
+        logging.error(f'# 详情页面不存在, community_id={community_id}')
+
+def parse_all_communities_address(city_id):
+    db_session = Session()
+
+    communities = db_session.query(Community).filter(
+        Community.city_id == city_id,
+        Community.address == None,
+        Community.page_fetched_at != None
+    ).all()
+
+    total_count = len(communities)
+    logging.info(f'city_id={city_id}, 待分析={total_count}')
+
+    for i, a_community in enumerate(communities):
+        address = parse_community_address(a_community.id)
+
+        if address:
+            a_community.address = address
+
+        if (i + 1) % 100 == 0 or (i == total_count - 1):
+            logging.info(f'进度={i + 1}/{total_count}, 剩余={total_count - i - 1}')
+            db_session.commit()
+
+    logging.info('已全部分析完成.')
+    db_session.close()
+
+def parse_all_communities_detail(city_id):
     db_session = Session()
 
     communities = db_session.query(Community).filter(
@@ -56,7 +97,8 @@ def parse_all_communities(city_id):
 
 
 def main():
-    parse_all_communities(config.city_id)
+    parse_all_communities_address(config.city_id)
+    # parse_all_communities_detail(config.city_id)
 
 
 if __name__ == '__main__':

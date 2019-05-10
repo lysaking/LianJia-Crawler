@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from sqlalchemy import types
 from sqlalchemy.ext.compiler import compiles
 

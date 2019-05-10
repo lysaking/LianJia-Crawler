@@ -1,10 +1,9 @@
+# -*- coding: utf-8 -*-
 import logging
 import os
 import sys
 from datetime import datetime, timedelta
-
 import requests
-
 import monkey
 import util
 from config import config
@@ -46,9 +45,10 @@ def update_city(city_id):
 
             if biz_circle:
                 # 记录已存在，可能需要更新 district_id
-                if district.id not in biz_circle.district_id:
-                    # biz_circle.district_id.append()、district_id += 等方式都不能更新表
-                    biz_circle.district_id = biz_circle.district_id + [district.id]
+                # if district.id not in biz_circle.district_id.split(','):
+                #     # biz_circle.district_id.append()、district_id += 等方式都不能更新表
+                #     biz_circle.district_id = biz_circle.district_id + ',' + str(district.id)
+                biz_circle.district_id = district.id
             else:
                 biz_circle = BizCircle(city.id, district.id, biz_circle_info)
                 db_session.add(biz_circle)
@@ -81,7 +81,7 @@ def get_city_info(city_id):
             break
 
     else:
-        logging.error(f'# 抱歉, 链家网暂未收录该城市~')
+        logging.error('# 抱歉, 链家网暂未收录该城市~')
         sys.exit(1)
 
     return city_info
