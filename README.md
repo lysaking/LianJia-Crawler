@@ -1,4 +1,4 @@
-## Super Fast 链家の爬虫
+## 链家爬虫
 基于[Fast LianJia Crawler](https://github.com/CaoZ/Fast-LianJia-Crawler)改造。主要修改为使用MySQL，并增加小区地址的爬取。
 
 ### 准备工作：
